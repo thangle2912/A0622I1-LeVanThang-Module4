@@ -55,7 +55,6 @@ public class AppConfiguration extends WebMvcConfigurerAdapter implements Applica
         return viewResolver;
     }
 
-    //cấu hình message source
     @Bean
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
