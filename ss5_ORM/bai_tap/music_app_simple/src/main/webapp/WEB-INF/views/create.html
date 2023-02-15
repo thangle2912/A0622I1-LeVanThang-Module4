@@ -1,0 +1,45 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Thêm mới bài hát</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+</head>
+<body>
+<div class="container">
+    <div style="text-align: center">
+        <h3>Thêm mới bài hát</h3>
+    </div>
+    <form th:object="${song}" th:action="@{/music/create}" method="post">
+        <div class="row" hidden>
+            <div class="mb-3">
+                <label for="id" class="form-label">Mã bài hát</label>
+                <input th:field="*{id}"  class="form-control" id="id" >
+            </div>
+        </div>
+        <div class="row">
+            <div class="mb-3">
+                <label for="name" class="form-label">Tên bài hát</label>
+                <input th:field="*{name}"  class="form-control" id="name">
+            </div>
+        </div>
+        <div class="row">
+            <div class="mb-3">
+                <label for="price" class="form-label">Thể loại</label>
+                <input th:field="*{musicGenre}" class="form-control" id="price" >
+            </div>
+        </div>
+        <div class="row">
+            <div class="mb-3">
+                <label for="description" class="form-label">Đường dẫn bài hát</label>
+                <input th:field="*{filePath}" class="form-control" id="description">
+            </div>
+        </div>
+        <button class="btn btn-success" style="color: aliceblue">Thêm bài hát mới</button>
+    </form>
+</div>
+</body>
+</html>
