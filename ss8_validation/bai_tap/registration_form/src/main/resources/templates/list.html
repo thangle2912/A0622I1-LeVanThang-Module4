@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style>
+        a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!--    <h4 th:text="#{mess}"></h4>-->
+    <h1 style="text-align: center">Users</h1>
+    <div class="row" style="margin: 10px">
+            <div class="col-2">
+                <button class="btn btn-success">
+                    <a th:href="@{/user/create}" style="color: #ffffff; text-decoration: none">Add new</a>
+                </button>
+            </div>
+
+
+    </div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">STT</th>
+            <th scope="col">Id User</th>
+            <th scope="col">First Name</th>
+            <th scope="col">Last Name</th>
+            <th scope="col">Phone Number</th>
+            <th scope="col">Age</th>
+            <th scope="col">Email</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user,row :${userList}">
+            <td th:text="${row.count}"></td>
+            <td th:text="${user.getId()}"></td>
+            <td th:text="${user.getFirstName()}"></td>
+            <td th:text="${user.getLastName()}"></td>
+            <td th:text="${user.getPhoneNumber()}"></td>
+            <td th:text="${user.getAge()}"></td>
+            <td th:text="${user.getEmail()}"></td>
+
+
+
+        </tr>
+        <tr th:if="${userList.isEmpty()}">
+            <td colspan="9">Danh sách trống</td>
+        </tr>
+        </tbody>
+    </table>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item"><a class="page-link"
+                                     th:href="@{list(page=${userPage.number - 1})}"
+                                     th:if="${userPage.hasPrevious()}">Previous</a></li>
+            <li class="page-item">
+                <span th:text="${userPage.number+1}"></span>/<span th:text="${userPage.totalPages}"></span>
+            </li>
+
+            <li class="page-item"><a class="page-link"
+                                     th:href="@{list(page=${userPage.number + 1})}"
+                                     th:if="${userPage.hasNext()}">Next</a></li>
+        </ul>
+    </nav>
+
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+</script>
+</body>
+</html>
