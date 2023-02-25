@@ -34,6 +34,7 @@
             <th scope="col">Mã danh mục</th>
             <th scope="col">Tên danh mục</th>
             <th scope="col">Blog</th>
+<!--            <th scope="col">Blogs</th>-->
             <th colspan="2">Thao tác</th>
         </tr>
         </thead>
@@ -47,6 +48,12 @@
                     <p th:text="${blog.getTitle()}"></p>
                 </span>
             </td>
+<!--            <td>-->
+<!--                <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#detailBlog"-->
+<!--                        th:attr="onclick=|showCategoryDetail('${category.getBlogSet()}','${blog.getContent()}')|">-->
+<!--                    Xem nội dung-->
+<!--                </button>-->
+<!--            </td>-->
             <td>
                 <button class="btn btn-warning">
                     <a th:href="@{/category/update(id=${category.getId()})}">Cập nhật</a>

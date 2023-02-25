@@ -12,6 +12,11 @@
     <div style="text-align: center">
         <h3>Thêm mới blog</h3>
     </div>
+    <div class="">
+        <button class="btn btn-success">
+            <a th:href="@{/blog/list}" style="color: #ffffff; text-decoration: none">Quay lại</a>
+        </button>
+    </div>
     <form th:object="${blog}" th:action="@{/blog/create}" method="post">
         <div class="row" hidden>
             <div class="mb-3">

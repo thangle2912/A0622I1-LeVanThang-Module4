@@ -25,6 +25,7 @@ public class BlogController {
     IBlogService blogService;
     @Autowired
     ICategoryService categoryService;
+
     @GetMapping("/list")
     public String showList(Model model,
                            @RequestParam(required = false, defaultValue = "") String searchTitle,
@@ -34,12 +35,12 @@ public class BlogController {
         if (page.isPresent()) {
             pageBegin = page.get();
         }
-        Pageable pageable = PageRequest.of(pageBegin, 3, Sort.by("date").descending());
-        Page<Blog> blogPage ;
+        Pageable pageable = PageRequest.of(pageBegin, 7, Sort.by("date").descending());
+        Page<Blog> blogPage;
 
-        if (idCategory == 0){
-            blogPage = blogService.searchByTitle(searchTitle,pageable);
-        }else {
+        if (idCategory == 0) {
+            blogPage = blogService.searchByTitle(searchTitle, pageable);
+        } else {
             blogPage = blogService.searchByTitleAndCategory(searchTitle, idCategory, pageable);
             model.addAttribute("idCategory", idCategory);
         }
@@ -88,10 +89,34 @@ public class BlogController {
         return "redirect:/blog/list";
     }
 
-    public String dateCreate(){
+    @GetMapping("/deletes")
+    public String delete(@RequestParam String idDeleteMore) {
+        //Chuỗi lấy qua sẽ có dấu "." ở đầu, dùng hàm để bỏ kí tự "."
+        idDeleteMore= removeCharAt(idDeleteMore, 0);
+
+        //Chuyền chuỗi thành mảng id
+        String[] idDelete = idDeleteMore.split("\\.");
+        int[] arrId = new int[idDelete.length];
+        for (int i = 0; i < idDelete.length; i++) {
+            arrId[i] = Integer.parseInt(idDelete[i]);
+        }
+        //dùng vòng lặp để xoá blog
+        for (int i:arrId) {
+            Blog blog = new Blog();
+            blog =  blogService.findById(i);
+            blogService.delete(blog);
+        }
+        return "redirect:/blog/list";
+    }
+
+    public String dateCreate() {
         Date date = new Date();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         String dateCreate = format.format(date);
         return dateCreate;
     }
+    public static String removeCharAt(String s, int pos) {
+        return s.substring(0, pos) + s.substring(pos + 1);
+    }
+
 }
