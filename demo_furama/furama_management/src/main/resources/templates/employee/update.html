@@ -1,0 +1,54 @@
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org">-->
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Cập nhật bài hát</title>-->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"-->
+<!--          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">-->
+
+<!--</head>-->
+<!--<body>-->
+<!--<div class="container">-->
+<!--    <div style="text-align: center">-->
+<!--        <h3>Cập nhật sản phẩm</h3>-->
+<!--    </div>-->
+<!--    <form th:object="${blog}" th:action="@{/blog/update}" method="post">-->
+<!--        <div class="row">-->
+<!--            <div class="mb-3">-->
+<!--                <input th:field="*{id}"  type="hidden" >-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="row">-->
+<!--            <div class="mb-3">-->
+<!--                <label for="name" class="form-label">Tiêu đề</label>-->
+<!--                <input th:field="*{title}"  class="form-control" id="name">-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="row">-->
+<!--            <div class="mb-3">-->
+<!--                <label for="price" class="form-label">Nội dung</label>-->
+<!--                <input th:field="*{content}" class="form-control" id="price" >-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="row">-->
+<!--            <div class="mb-3">-->
+<!--                <label for="description" class="form-label">Mô tả</label>-->
+<!--                <input th:field="*{description}" class="form-control" id="description">-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="row">-->
+<!--            <div class="mb-3">-->
+<!--                <label for="blogSet" class="form-label">Danh sách blog</label>-->
+<!--                <select th:field="*{category}" class="form-select" aria-label=".form-select-lg example" id="blogSet">-->
+<!--                    <option th:each="category: ${categoryList}" th:text="${category.getName()}" th:value="${category.getId()}"></option>-->
+
+<!--                </select>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <button class="btn btn-success" style="color: aliceblue">Cập nhật</button>-->
+<!--    </form>-->
+<!--</div>-->
+<!--</body>-->
+
+<!--</html>-->
