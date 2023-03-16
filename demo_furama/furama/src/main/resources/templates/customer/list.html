@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách Khách hàng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style>
+        a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div th:insert="header"></div>
+
+    <!--    <h4 th:text="#{mess}"></h4>-->
+    <h1 style="text-align: center">Danh sách Khách hàng</h1>
+    <div class="row" style="margin: 10px">
+        <form style="display: flex" th:action="@{/customer/list}" method="get" >
+            <div class="col-2">
+                <button class="btn btn-success">
+                    <a th:href="@{/customer/create}" style="color: #ffffff; text-decoration: none">Thêm mới khách hàng</a>
+                </button>
+            </div>
+
+<!--            <div class="col-2">-->
+<!--                <select class="form-select" aria-label="Default select example" name="idCategory">-->
+<!--                    <option value="">Tất cả</option>-->
+<!--                    <option th:each="category: ${categoryList}" th:text="${category.getName()}"-->
+<!--                            th:value="${category.getId()}"></option>-->
+<!--                </select>-->
+<!--            </div>-->
+            <div class="col-5">
+                <div class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
+                    <input type="search" class="form-control" placeholder="Nhập tên nhân viên" name="searchName"
+                           th:value="${searchName}">
+                </div>
+            </div>
+            <div class="col-3">
+                <button type="submit" class="btn btn-light ">Tìm kiếm</button>
+
+            </div>
+        </form>
+
+    </div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">STT</th>
+            <th scope="col">Mã khách hàng</th>
+            <th scope="col">Họ tên</th>
+            <th scope="col">Ngày sinh</th>
+            <th scope="col">Số CMND</th>
+            <th scope="col">Giới tính</th>
+            <th scope="col">Số điện thoại</th>
+            <th scope="col">Email</th>
+            <th scope="col">Địa chỉ</th>
+            <th scope="col">Loại khách hàng</th>
+            <th colspan="2">Thao tác</th>
+            <th scope="col">
+                <button  id="btn" type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                         data-bs-toggle="modal" data-bs-target="#deleteModals">Xoá nhiều</button>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="customer,row :${customerPage}">
+            <td th:text="${row.count}"></td>
+            <td th:text="${customer.getId()}"></td>
+            <td th:text="${customer.getName()}"></td>
+            <td th:text="${customer.getBirthday()}"></td>
+            <td th:text="${customer.getIdCard()}"></td>
+            <td th:switch="${customer.isGender()}">
+                <span th:case="true">Nam</span>
+                <span th:case="false">Nữ</span>
+            </td>
+            <td th:text="${customer.getPhoneNumber()}"></td>
+            <td th:text="${customer.getEmail()}"></td>
+            <td th:text="${customer.getAddress()}"></td>
+            <td th:text="${customer.getCustomerType().getName()}"></td>
+            <td>
+                <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#detailCustomer"
+                        th:attr="onclick=|showBlogDetail('${customer.getName()}','${customer.getName()}')|">
+                    Xem nội dung
+                </button>
+            </td>
+            <td>
+                <button class="btn btn-warning">
+                    <a th:href="@{/customer/update(id=${customer.getId()})}">Cập nhật</a>
+                </button>
+            </td>
+            <td>
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                        th:attr="onclick=|deleteCustomer('${customer.getId()}','${customer.getName()}')|"> Xoá
+                </button>
+            </td>
+            <td>
+                <input  name="idDelete" class="form-check-input" type="checkbox" th:value="${customer.getId()}">
+            </td>
+        </tr>
+        <tr th:if="${customerPage.isEmpty()}">
+            <td colspan="9">Danh sách trống</td>
+<!--        </tr>-->
+        </tbody>
+    </table>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item"><a class="page-link"
+                                     th:href="@{list(page=${customerPage.number - 1})}"
+                                     th:if="${customerPage.hasPrevious()}">Previous</a></li>
+            <li class="page-item">
+                <span th:text="${customerPage.number+1}"></span>/<span th:text="${customerPage.totalPages}"></span>
+            </li>
+
+            <li class="page-item"><a class="page-link"
+                                     th:href="@{list(page=${customerPage.number + 1})}"
+                                     th:if="${customerPage.hasNext()}">Next</a></li>
+        </ul>
+    </nav>
+
+    <!--    Modal delete-->
+    <div class="modal fade" id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false"
+         tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Xoá khách hàng</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Bạn có muốn xoá : <span id="titleCustomerDelete"></span> ?
+                </div>
+                <form action="/customer/delete" method="get">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng
+                        </button>
+                        <button type="submit" class="btn btn-danger">Xoá</button>
+                        <input hidden name="id" type="text" id="idDelete">
+                        <input hidden name="action" value="delete" type="text" id="">
+
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+    <!--    Xoá nhiều Record-->
+    <!--    Modal deletes-->
+    <div class="modal fade" id="deleteModals" data-bs-backdrop="static" data-bs-keyboard="false"
+         tabindex="-1" aria-labelledby="staticBackdropLabel1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel1">Xoá Blog</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+<!--                    Bạn có muốn xoá customer có mã : <span id="titleBlogDeletes"></span> ?-->
+                    Bạn có muốn xoá các mục đã chọn ?
+                </div>
+                <form action="/customer/deletes" method="get">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng
+                        </button>
+                        <button type="submit" class="btn btn-danger">Xoá</button>
+                        <input hidden type="text" id="idDeleteMore" name="idDeleteMore">
+
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <!--  Modal detail-->
+    <div class="modal fade" id="detailCustomer" tabindex="-1" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"> Chi tiết Blog</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-4"><h5>Tiêu đề</h5></div>
+                            <h5></h5>
+                            <div class="col-md-8 ms-auto" id="showTitle"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4"><h5>Nội dung</h5></div>
+                            <h5></h5>
+                            <div class="col-md-8 ms-auto" id="showContent"></div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+<script th:inline="javascript">
+    function deleteCustomer(id, name) {
+        document.getElementById('titleCustomerDelete').innerText = name;
+        document.getElementById('idDelete').value = id;
+    }
+
+    function showCustomerDetail(title, content) {
+        document.getElementById("showTitle").innerText = title;
+        document.getElementById("showContent").innerText = content;
+
+    }
+    //Bắt sự kiện nhấn nút xoá nhiều
+    document.getElementById('btn').onclick = function()
+    {
+        var checkbox = document.getElementsByName('idDelete');
+        var result = "";
+        for (var i = 0; i < checkbox.length; i++){
+            if (checkbox[i].checked === true){
+                result += '.'+checkbox[i].value;
+            }
+        }
+        document.getElementById('idDeleteMore').value = result;
+    };
+    const checkboxs = document.getElementsByName('idDelete');
+    checkboxs.addEventListener('change', (event) => {
+        if (event.currentTarget.checked) {
+            alert('checked');
+        } else {
+            alert('not checked');
+        }
+    })
+</script>
+</body>
+</html>

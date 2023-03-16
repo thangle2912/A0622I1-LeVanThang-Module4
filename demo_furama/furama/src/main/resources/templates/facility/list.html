@@ -20,20 +20,21 @@
 
 
     <div class="row" style="margin: 10px">
-        <form style="display: flex" th:action="@{/user/list}" method="get">
+        <form style="display: flex" th:action="@{/facility/list}" method="get">
+
             <div class="col-2">
                 <button class="btn btn-success">
-                    <a th:href="@{/user/create}" style="color: #ffffff; text-decoration: none">Thêm mới dịch vụ</a>
+                    <a th:href="@{/facility/create}" style="color: #ffffff; text-decoration: none">Thêm mới dịch vụ</a>
                 </button>
             </div>
 
-            <!--            <div class="col-2">-->
-            <!--                <select class="form-select" aria-label="Default select example" name="idCategory">-->
-            <!--                    <option value="">Tất cả</option>-->
-            <!--                    <option th:each="category: ${categoryList}" th:text="${category.getName()}"-->
-            <!--                            th:value="${category.getId()}"></option>-->
-            <!--                </select>-->
-            <!--            </div>-->
+            <div class="col-2">
+                <select class="form-select" aria-label="Default select example" name="idFacilityType">
+                    <option value="">Tất cả</option>
+                    <option th:each="facilityType: ${facilityTypeList}" th:text="${facilityType.getName()}"
+                            th:value="${facilityType.getId()}"></option>
+                </select>
+            </div>
             <div class="col-5">
                 <div class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
                     <input type="search" class="form-control" placeholder="Nhập tên dịch vụ" name="searchName"
@@ -50,76 +51,53 @@
     <div class="row row-cols-1 row-cols-md-3 g-4">
         <div class="col" th:each="facility,row :${facilityPage}">
             <div class="card h-100">
-                <img src="..." class="card-img-top" alt="...">
-                <div class="card-body">
+                <img width="370px" height="240px"
+                     src="https://furamavietnam.com/wp-content/uploads/2018/03/Vietnam_Danang_Furama_Ocean-Suite-Feature-768x497.jpg"
+                     class="card-img-top" alt="picture">
+                <div class="card-body" style="align-self: center;">
                     <h5 class="card-title" th:text="${facility.getName()}"></h5>
-                    <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+
+                    <p class="card-text">
+                        <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#detailBlog"
+                                th:attr="onclick=|showBlogDetail('${facility.getId()}','${facility.getName()}')|">
+                            Xem nội dung
+                        </button>
+                    </p>
+                    <div>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#deleteModal"
+                                th:attr="onclick=|deleteBlog('${facility.getName()}','${facility.getName()}')|"> Xoá
+                        </button>
+                        <button class="btn btn-warning">
+                            <a th:href="@{/facility/update(id=${facility.getId()})}">Cập nhật</a>
+                        </button>
+                        <input name="idDelete" class="form-check-input" type="checkbox"
+                               th:value="${facility.getId()}">
+                    </div>
+
                 </div>
             </div>
         </div>
 
     </div>
-<!--    <table class="table">-->
-<!--        <thead>-->
-<!--        <tr>-->
-<!--            <th scope="col">STT</th>-->
-<!--            <th scope="col">Tên đăng nhập</th>-->
-<!--            <th scope="col">Mật khẩu</th>-->
-<!--            <th scope="col">Phân quyền</th>-->
-<!--            <th colspan="2">Thao tác</th>-->
-<!--            <th scope="col">-->
-<!--                <button id="btn" type="button" class="btn btn-secondary" data-bs-dismiss="modal"-->
-<!--                        data-bs-toggle="modal" data-bs-target="#deleteModals">Xoá nhiều-->
-<!--                </button>-->
-<!--            </th>-->
-<!--        </tr>-->
-<!--        </thead>-->
-<!--        <tbody>-->
-<!--        <tr th:each="user,row :${userPage}">-->
-<!--            <td th:text="${row.count}"></td>-->
-<!--            <td th:text="${user.getUsername()}"></td>-->
-<!--            <td th:text="${user.getPassword()}"></td>-->
-<!--            <td th:text="${user.getRoleSet()}"></td>-->
 
-<!--            <td>-->
-<!--                <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#detailBlog"-->
-<!--                        th:attr="onclick=|showBlogDetail('${user.getUsername()}','${user.getUsername()}')|">-->
-<!--                    Xem nội dung-->
-<!--                </button>-->
-<!--            </td>-->
-<!--            <td>-->
-<!--                <button class="btn btn-warning">-->
-<!--                    <a th:href="@{/employee/update(id=${user.getUsername()})}">Cập nhật</a>-->
-<!--                </button>-->
-<!--            </td>-->
-<!--            <td>-->
-<!--                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"-->
-<!--                        th:attr="onclick=|deleteBlog('${user.getUsername()}','${user.getUsername()}')|"> Xoá-->
-<!--                </button>-->
-<!--            </td>-->
-<!--            <td>-->
-<!--                <input name="idDelete" class="form-check-input" type="checkbox" th:value="${user.getUsername()}">-->
-<!--            </td>-->
-<!--        </tr>-->
-<!--        <tr th:if="${userPage.isEmpty()}">-->
-<!--            <td colspan="9">Danh sách trống</td>-->
-<!--            &lt;!&ndash;        </tr>&ndash;&gt;-->
-<!--        </tbody>-->
-<!--    </table>-->
-<!--    <nav aria-label="Page navigation example">-->
-<!--        <ul class="pagination">-->
-<!--            <li class="page-item"><a class="page-link"-->
-<!--                                     th:href="@{list(page=${userPage.number - 1})}"-->
-<!--                                     th:if="${userPage.hasPrevious()}">Previous</a></li>-->
-<!--            <li class="page-item">-->
-<!--                <span th:text="${userPage.number+1}"></span>/<span th:text="${userPage.totalPages}"></span>-->
-<!--            </li>-->
+    <h3 th:if="${facilityPage.isEmpty()}" th:text="Danh sách trống"></h3>
 
-<!--            <li class="page-item"><a class="page-link"-->
-<!--                                     th:href="@{list(page=${userPage.number + 1})}"-->
-<!--                                     th:if="${userPage.hasNext()}">Next</a></li>-->
-<!--        </ul>-->
-<!--    </nav>-->
+
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item"><a class="page-link"
+                                         th:href="@{list(page=${facilityPage.number - 1})}"
+                                         th:if="${facilityPage.hasPrevious()}">Previous</a></li>
+                <li class="page-item">
+                    <span th:text="${facilityPage.number+1}"></span>/<span th:text="${facilityPage.totalPages}"></span>
+                </li>
+
+                <li class="page-item"><a class="page-link"
+                                         th:href="@{list(page=${facilityPage.number + 1})}"
+                                         th:if="${facilityPage.hasNext()}">Next</a></li>
+            </ul>
+        </nav>
 
     <!--    Modal delete-->
     <div class="modal fade" id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false"
