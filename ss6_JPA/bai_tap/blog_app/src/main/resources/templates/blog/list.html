@@ -60,11 +60,11 @@
             <th scope="col">Mô tả</th>
             <th scope="col">Ngày tạo Blog</th>
             <th scope="col">Danh mục</th>
+            <th colspan="3">Thao tác</th>
             <th scope="col">
                 <button  id="btn" type="button" class="btn btn-secondary" data-bs-dismiss="modal"
                          data-bs-toggle="modal" data-bs-target="#deleteModals">Xoá nhiều</button>
             </th>
-            <th colspan="3">Thao tác</th>
         </tr>
         </thead>
         <tbody>
@@ -76,9 +76,7 @@
             <td th:text="${blog.getDescription()}"></td>
             <td th:text="${blog.getDate()}"></td>
             <td th:text="${blog.getCategory().getName()}"></td>
-            <td>
-                <input  name="idDelete" class="form-check-input" type="checkbox" th:value="${blog.getId()}">
-            </td>
+
             <td>
                 <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#detailBlog"
                         th:attr="onclick=|showBlogDetail('${blog.getTitle()}','${blog.getContent()}')|">
@@ -94,6 +92,9 @@
                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"
                         th:attr="onclick=|deleteBlog('${blog.getId()}','${blog.getTitle()}')|"> Xoá
                 </button>
+            </td>
+            <td>
+                <input  name="idDelete" class="form-check-input" type="checkbox" th:value="${blog.getId()}">
             </td>
         </tr>
 <!--        <tr th:if="${blogPage.isEmpty()}">-->
@@ -155,7 +156,8 @@
                             aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Bạn có muốn xoá blog có mã : <span id="titleBlogDeletes"></span> ?
+<!--                    Bạn có muốn xoá blog có mã : <span id="titleBlogDeletes"></span> ?-->
+                    Bạn có muốn xoá các mục đã chọn ?
                 </div>
                 <form action="/blog/deletes" method="get">
                     <div class="modal-footer">
@@ -241,7 +243,14 @@
         }
         document.getElementById('idDeleteMore').value = result;
     };
-
+    const checkboxs = document.getElementsByName('idDelete');
+    checkboxs.addEventListener('change', (event) => {
+        if (event.currentTarget.checked) {
+            alert('checked');
+        } else {
+            alert('not checked');
+        }
+    })
 </script>
 </body>
 </html>

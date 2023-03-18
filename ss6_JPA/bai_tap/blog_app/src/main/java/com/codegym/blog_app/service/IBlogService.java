@@ -14,5 +14,8 @@ public interface IBlogService {
     Blog findById(int id);
     Page<Blog> searchByTitle(String title, Pageable pageable);
     Page<Blog> searchByTitleAndCategory(String title,int idCategory, Pageable pageable);
+    List<Blog> searchByCategory(int id);
+    List<Blog> searchByTitle(String title);
+    List<Blog> loadMore(int quantity);
 
 }

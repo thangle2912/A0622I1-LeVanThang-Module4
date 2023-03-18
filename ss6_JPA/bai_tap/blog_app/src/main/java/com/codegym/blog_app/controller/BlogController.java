@@ -48,7 +48,7 @@ public class BlogController {
         model.addAttribute("searchTitle", searchTitle);
 
         model.addAttribute("categoryList", categoryService.findAll());
-        return "blog/list";
+        return "blog/ajax";
     }
 
     @GetMapping("/create")

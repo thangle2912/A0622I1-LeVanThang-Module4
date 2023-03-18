@@ -1,5 +1,7 @@
 package com.codegym.blog_app.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -9,7 +11,7 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "category")
     private Set<Blog> blogSet;
 
