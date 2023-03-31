@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách Sản phẩm</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <style>
+        a {
+            text-decoration: none;
+        }
+    </style>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+</head>
+<body>
+<div class="container-fluid">
+
+    <!--    <h4 th:text="#{mess}"></h4>-->
+    <h1 style="text-align: center">Danh sách Sản phẩm</h1>
+    <div class="row" style="margin: 10px">
+        <form style="display: flex" th:action="@{/product/list}" method="get">
+            <div class="col-2">
+                <button class="btn btn-success">
+                    <a th:href="@{/product/create}" style="color: #ffffff; text-decoration: none">Thêm mới sản phẩm</a>
+                </button>
+            </div>
+            <div class="col-2">
+                <select class="form-select" aria-label="Default select example" name="idProductType" id="idProductType">
+                    <option value="">Tất cả</option>
+                    <option th:each="productType: ${customerTypeList}" th:text="${productType.getName()}"
+                            th:value="${productType.getId()}"></option>
+                </select>
+            </div>
+            <div class="col-2">
+                <div class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
+                    <input type="search" class="form-control" placeholder="Nhập tên sản phẩm" name="searchName" id="searchName"
+                           th:value="${searchName}">
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
+                    <input type="search" class="form-control" placeholder="Giá tiền" name="searchPrice" id="searchPrice"
+                           th:value="${searchPrice}">
+                </div>
+            </div>
+
+            <div class="col-3">
+                <button type="button" class="btn btn-light " onclick="deleteOption()">Xoá chọn</button>
+                <button type="submit" class="btn btn-light ">Tìm kiếm</button>
+
+            </div>
+        </form>
+
+    </div>
+    <h5 th:text="${mess}"></h5>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">STT</th>
+            <th scope="col">Tên sản phẩm</th>
+            <th scope="col">Giá bắt đầu</th>
+            <th scope="col">Loại sản phẩm</th>
+            <th scope="col">Tình trạng</th>
+            <th scope="col">Thao tác</th>
+            <th scope="col">
+                <button id="btn" type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        data-bs-toggle="modal" data-bs-target="#deleteModals">Xoá
+                </button>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="product,row :${productPage}">
+            <td th:text="${row.count}"></td>
+            <td th:text="${product.getName()}"></td>
+            <td th:text="${product.getPrice()}"></td>
+            <td th:text="${product.getProductType().getName()}"></td>
+            <td th:text="${product.getStatus()}"></td>
+
+            <td>
+                <button class="btn btn-warning">
+                    <a th:href="@{/product/update(id=${product.getId()})}">Cập nhật</a>
+                </button>
+            </td>
+            <td>
+                <input name="idDelete" class="form-check-input" type="checkbox" th:value="${product.getId()}">
+            </td>
+        </tr>
+        <tr th:if="${productPage.isEmpty()}">
+            <td colspan="9">Danh sách trống</td>
+            <!--        </tr>-->
+        </tbody>
+    </table>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item"><a class="page-link"
+                                     th:href="@{list(page=${productPage.number - 1},searchName=${searchName},searchPrice=${searchPrice},idProductType=${idProductType})}"
+                                     th:if="${productPage.hasPrevious()}">Previous</a></li>
+            <li class="page-item">
+                <span th:text="${productPage.number+1}"></span>/<span th:text="${productPage.totalPages}"></span>
+            </li>
+
+            <li class="page-item"><a class="page-link"
+                                     th:href="@{list(page=${productPage.number + 1},searchName=${searchName},searchPrice=${searchPrice},idProductType=${idProductType})}"
+                                     th:if="${productPage.hasNext()}">Next</a></li>
+        </ul>
+    </nav>
+
+
+    <!--    Xoá nhiều Record-->
+    <!--    Modal deletes-->
+    <div class="modal fade" id="deleteModals" data-bs-backdrop="static" data-bs-keyboard="false"
+         tabindex="-1" aria-labelledby="staticBackdropLabel1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel1">Xoá Sản phẩm</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!--                    Bạn có muốn xoá product có mã : <span id="titleBlogDeletes"></span> ?-->
+                    Bạn có muốn xoá các mục đã chọn ?
+                </div>
+                <form action="/product/deletes" method="get">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng
+                        </button>
+                        <button type="submit" class="btn btn-danger">Xoá</button>
+                        <input hidden type="text" id="idDeleteMore" name="idDeleteMore">
+
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <!--  Modal detail-->
+    <div class="modal fade" id="detailCustomer" tabindex="-1" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"> Chi tiết khách hàng</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-3"><h5>Họ tên</h5></div>
+                            <div class="col-md-9 ms-auto" id="detailName"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3"><h5>Địa chỉ</h5></div>
+                            <div class="col-md-9 ms-auto" id="detailAddress"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+<script th:inline="javascript">
+    function deleteOption(){
+        document.getElementById('searchName').value = "";
+        document.getElementById('searchPrice').value = "";
+    }
+    function deleteCustomer(id, name) {
+        document.getElementById('titleCustomerDelete').innerText = name;
+        document.getElementById('idDelete').value = id;
+    }
+
+    function showCustomerDetail(title, content) {
+        document.getElementById("showTitle").innerText = title;
+        document.getElementById("showContent").innerText = content;
+
+    }
+
+    //Bắt sự kiện nhấn nút xoá nhiều
+    document.getElementById('btn').onclick = function () {
+        var checkbox = document.getElementsByName('idDelete');
+        var result = "";
+        for (var i = 0; i < checkbox.length; i++) {
+            if (checkbox[i].checked === true) {
+                result += '.' + checkbox[i].value;
+            }
+        }
+        document.getElementById('idDeleteMore').value = result;
+    };
+    // const checkboxs = document.getElementsByName('idDelete');
+    // checkboxs.addEventListener('change', (event) => {
+    //     if (event.currentTarget.checked) {
+    //         alert('checked');
+    //     } else {
+    //         alert('not checked');
+    //     }
+    // })
+
+    function getDetail(id) {
+        $.ajax({
+                contentType: 'application/json',
+                type: "GET",
+                dataType: "json",
+                //tên API
+                url: "http://localhost:8080/product/api/detail/" + id,
+                success: function (data) {
+                    if (data == null) {
+
+                    } else {
+                        console.log(data)
+                        $("#detailName").text(data.name)
+                        $("#detailAddress").text(data.address)
+                    }
+                }
+            }
+        );
+    }
+
+    //Set dữ liệu
+    // $(document).ready(function(){
+    //     $("#btn1").click(function(){
+    //         $("#test1").text("Hello world!");
+    //     });
+    //     $("#btn2").click(function(){
+    //         $("#test2").html("<b>Hello world!</b>");
+    //     });
+    //     $("#btn3").click(function(){
+    //         $("#test3").val("Dolly Duck");
+    //     });
+    // });
+</script>
+</body>
+</html>

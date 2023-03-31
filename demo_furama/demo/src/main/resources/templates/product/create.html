@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thêm mới sản phẩm</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+</head>
+<body>
+<div class="container">
+    <div style="text-align: center">
+        <h3>Thêm mới sản phẩm</h3>
+    </div>
+    <div class="">
+        <button class="btn btn-success">
+            <a th:href="@{/product/list}" style="color: #ffffff; text-decoration: none">Quay lại</a>
+        </button>
+    </div>
+    <form th:object="${productDTO}" th:action="@{/product/create}" method="post">
+        <div class="row" hidden>
+            <div class="mb-3">
+                <label for="id" class="form-label">Mã</label>
+                <input th:field="*{id}" class="form-control" id="id">
+            </div>
+        </div>
+        <div class="row">
+            <div class="mb-3">
+                <label for="name" class="form-label">Tên sản phẩm</label>
+                <input th:field="*{name}" class="form-control" id="name">
+                <span style="color: red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="mb-3">
+                <label for="idCard" class="form-label">Giá ban đầu</label>
+                <input th:field="*{price}" class="form-control" id="idCard">
+                <span style="color: red" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></span>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="mb-3">
+                <label for="division" class="form-label">Loại sản phẩm</label>
+                <select th:field="*{productType}" class="form-select" aria-label=".form-select-lg example"
+                        id="division">
+                    <option th:each="productType: ${productTypeList}" th:text="${productType.getName()}"
+                            th:value="${productType.getId()}"></option>
+                </select>
+            </div>
+        </div>
+        <button class="btn btn-success" style="color: aliceblue">Thêm mới</button>
+    </form>
+</div>
+</body>
+</html>
